@@ -22,6 +22,17 @@ bazel_dep(name = "rules_testing", version = "0.6.0", dev_dependency = True)
 bazel_dep(name = "rules_cc", version = "0.0.17", dev_dependency = True)
 bazel_dep(name = "rules_shell", version = "0.3.0", dev_dependency = True)
 
+# Bitrise's Linux Docker stacks build as root, which rules_python's hermetic interpreter refuses
+# by default.
+bazel_dep(name = "rules_python", version = "0.40.0", dev_dependency = True)
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python", dev_dependency = True)
+python.toolchain(
+    ignore_root_user_error = True,
+    is_default = True,
+    python_version = "3.11",
+)
+
 # Needed for bazelci and for building distribution tarballs.
 # If using an unreleased version of bazel_skylib via git_override, apply
 # MODULE.bazel-remove-override.patch to remove the following lines:
